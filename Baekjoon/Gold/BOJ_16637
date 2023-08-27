@@ -1,0 +1,64 @@
+package study;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class BOJ_16637 {
+	public static int n;
+	public static ArrayList<Integer> num;
+	public static ArrayList<Character> oper;
+	public static int maxResult;
+
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		n = Integer.parseInt(br.readLine());
+		
+		String str = br.readLine();
+		
+		num = new ArrayList<>();
+		oper = new ArrayList<>();
+		
+		for(int i = 0; i < str.length(); i++) {
+			if(i % 2 != 0)
+				oper.add(str.charAt(i));
+			else
+				num.add(str.charAt(i) - '0');
+		}
+		
+		maxResult = Integer.MIN_VALUE;
+		dfs(num.get(0), 0);
+		
+		System.out.println(maxResult);
+	}
+
+	public static void dfs(int result, int cnt) {
+		if(cnt == oper.size()) {
+			maxResult = Math.max(maxResult, result);
+			return;
+		}
+		
+		// 1. 괄호가 없는 경우
+		dfs(calc(result, num.get(cnt + 1), oper.get(cnt)), cnt + 1);
+		
+		// 2. 괄호가 있는 경우
+		if(cnt + 1 < oper.size())
+			dfs(calc(result, calc(num.get(cnt + 1), num.get(cnt + 2), oper.get(cnt + 1)), oper.get(cnt)), cnt + 2);
+	}
+	
+	public static int calc(int a, int b, char c) {
+		switch(c) {
+		case '+':
+			return a + b;
+		case '-':
+			return a - b;
+		case '*':
+			return a * b;
+		}
+		
+		return 0;
+	}
+}
